@@ -18,3 +18,36 @@ Route::get('/', function () {
 Route::auth();
 
 Route::get('/home', 'HomeController@index');
+
+// lekcija: 27 - Application - 190.Admin master file - download file.mp4
+Route::get('/admin', function(){
+  return view('admin.index'); // ucitaj vju index.blade.php iz foldera 'codehacking\resources\views\admin' koji extenduje admin.blade.php iz foldera 'codehacking\resources\views\layouts'
+});
+
+// lekcija: 27 - Application - 186.Admin controller and routes.mp4
+Route::resource('admin/users', 'AdminUsersController');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
