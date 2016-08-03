@@ -20,6 +20,7 @@ Route::auth();
 Route::get('/home', 'HomeController@index');
 
 // lekcija: 27 - Application - 190.Admin master file - download file.mp4
+// URL : http://codehacking.dev/admin
 Route::get('/admin', function(){
   return view('admin.index'); // ucitaj vju index.blade.php iz foldera 'codehacking\resources\views\admin' koji extenduje admin.blade.php iz foldera 'codehacking\resources\views\layouts'
 });

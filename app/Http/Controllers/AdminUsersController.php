@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UsersRequest;
+use App\User;
+use App\Role;
 use Illuminate\Http\Request;
-
 use App\Http\Requests;
 
 class AdminUsersController extends Controller{
@@ -12,9 +14,12 @@ class AdminUsersController extends Controller{
      *
      * @return \Illuminate\Http\Response
      */
+	 
+	// URL : http://codehacking.dev/admin/users poziva index.blade.php iz foldera 'codehacking\resources\views\admin\users'
     public function index(){
       // lekcija: 27 - Application - 187.Testing methods.mp4
-	  return view('admin.users.index');
+	  $users = User::all(); // izvadi sve iz 'users' tabele(preko User modela)
+	  return view('admin.users.index', compact('users')); // pozovi vju index.blade.php iz foldera 'codehacking\resources\views\admin\users' i posalji mu usere izvucene iz tabele 'users'
     }
 
     /**
@@ -22,9 +27,13 @@ class AdminUsersController extends Controller{
      *
      * @return \Illuminate\Http\Response
      */
+	// lekcija: 27 - Application - 194.Laravel collective html package.mp4
+	// URL : http://codehacking.dev/admin/users/create poziva create.blade.php iz foldera 'codehacking\resources\views\admin\users'
     public function create(){
       // lekcija: 27 - Application - 187.Testing methods.mp4
-	  return view('admin.users.create');
+	  // lekcija: 27 - Application - 197.Populating the user roles select.mp4, izvlacenje rola iz 'roles' tabele da bi se popunio select field za biranje role kad se kreira novi user ucreate.blade.php iz foldera 'codehacking\resources\views\admin\users'
+	  $roles = Role::lists('name', 'id')->all(); // izvuci imena i id-eve rola iz roles tabele
+	  return view('admin.users.create', compact('roles')); // pozovi vju i posalji mu imena i id-eve rola iz roles tabele
     }
 
     /**
@@ -33,8 +42,14 @@ class AdminUsersController extends Controller{
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request){
-      //
+	// lekcija: 27 - Application - 195.Testing form and creating form fields.mp4
+	// metod prima unos u formu u vjuu create.blade.php iz foldera 'codehacking\resources\views\admin\users' koja sluzi za kreiranje novog usera
+    public function store(UsersRequest $request){
+	  //return $request->all(); // samo provera, odstampaj sta je stiglo u $request-u
+	  
+	  User::create($request->all());  // napravi usera u users tabeli i upisi sta je stiglo u requestu posto se imena kolona podudaraju sa imenima polja u formi  
+	  return redirect('/admin/users');   // redirectuj na index.blade.php iz foldera 'resources\views\admin\users' koji prikazuje tabelu sa userima iz baze
+	  
     }
 
     /**
