@@ -27,6 +27,12 @@ class User extends Authenticatable{
 	public function role(){
 	  return $this->belongsTo('App\Role');
 	}
+	
+	// lekcija: 27 - Application - 202.User photos migration - relation - mass-assignment.mp4
+	public function photo(){
+	  return $this->belongsTo('App\Photo');
+	}
+	
 }
 
 

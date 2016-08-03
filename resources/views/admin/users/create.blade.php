@@ -31,8 +31,8 @@
 	
 	{{--dodavanje polja za unos slike ,  lekcija: 27 - Application - 200.Adding upload file feature to form.mp4--}}
 	<div class="form-group">
-	  {!! Form::label('file', 'Picture:') !!}
-	  {!! Form::file('file', null, ['class'=>'form-control']) !!} {{--dodavanje slike--}}
+	  {!! Form::label('photo_id', 'Photo:') !!}
+	  {!! Form::file('photo_id', null, ['class'=>'form-control']) !!} {{--dodavanje slike--}}
 	</div>
 	
 	{{-- lekcija: 27 - Application - 198.Password field and custom request.mp4 --}}

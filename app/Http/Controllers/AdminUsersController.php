@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UsersRequest;
+use App\Photo;
 use App\User;
 use App\Role;
 use Illuminate\Http\Request;
@@ -45,10 +46,19 @@ class AdminUsersController extends Controller{
 	// lekcija: 27 - Application - 195.Testing form and creating form fields.mp4
 	// metod prima unos u formu u vjuu create.blade.php iz foldera 'codehacking\resources\views\admin\users' koja sluzi za kreiranje novog usera
     public function store(UsersRequest $request){
-	  //return $request->all(); // samo provera, odstampaj sta je stiglo u $request-u
+	  $input = $request->all(); // ubaci sve iz requesta u varijablu
+	  //User::create($request->all());  // napravi usera u users tabeli i upisi sta je stiglo u requestu posto se imena kolona podudaraju sa imenima polja u formi    
+	  if($file = $request->file('photo_id')){ // proveri da li je uploadovana fotografija pri kreiranju novog usera u formi u create.blade.php iz foldera 'codehacking\resources\views\admin\users'
+	    // ako jeste radi ovo -
+		$name = time().$file->getClientOriginalName();// napravi ime za uploadovani fajl tj sliku tako sto na trenutno vreme konkatenujes originalno ime slike
+	    $file->move('images', $name); // ubaci fajl u folder 'codehacking\public\images'
+		$photo = Photo::create(['file'=>$name]); // u 'file' kolonu 'photos' tabele upisi ime fajla kji je uploadovan
+        $input['photo_id'] = $photo->id; // u $input array u koji prebace $request upisi 'photo_id' da bude onaj koji je dodeljen fotografiji u tabeli 'photos'		
+	  }
+	  $input['password'] = bcrypt($request->password); // kriptuj password koji je user uneo u formu i ubaci ga u input array da bude upisan u bazu
+	  User::create($input); // upisi red u tabelu users koristeci $input array u koji je ubacen $request array
 	  
-	  User::create($request->all());  // napravi usera u users tabeli i upisi sta je stiglo u requestu posto se imena kolona podudaraju sa imenima polja u formi  
-	  return redirect('/admin/users');   // redirectuj na index.blade.php iz foldera 'resources\views\admin\users' koji prikazuje tabelu sa userima iz baze
+	  //return redirect('/admin/users');   // redirectuj na index.blade.php iz foldera 'resources\views\admin\users' koji prikazuje tabelu sa userima iz baze
 	  
     }
 

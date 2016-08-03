@@ -91,10 +91,12 @@
                         <a href="#"><i class="fa fa-wrench fa-fw"></i> Users<span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
                             <li>
-                                <a href="/users">All Users</a>
+							    {{--link ce pozivati rutu admin.users.index koja poziva index() metod AdminUsersController-a,(URL: codehacking.dev/admin/users) lekcija: 27 - Application - 203.Creating links and more.mp4--}}
+                                <a href="{{route('admin.users.index')}}">All Users</a>
                             </li>
                             <li>
-                                <a href="/users/create">Create User</a>
+							    {{--link ce pozivati rutu admin.users.create koja poziva create() metod AdminUsersController-a,(URL: codehacking.dev/admin/users/create) lekcija: 27 - Application - 203.Creating links and more.mp4--}}
+                                <a href="{{route('admin.users.create')}}">Create User</a>
                             </li>
                         </ul> <!-- /.nav-second-level -->
                     </li>
