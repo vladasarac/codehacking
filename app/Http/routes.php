@@ -25,10 +25,18 @@ Route::get('/admin', function(){
   return view('admin.index'); // ucitaj vju index.blade.php iz foldera 'codehacking\resources\views\admin' koji extenduje admin.blade.php iz foldera 'codehacking\resources\views\layouts'
 });
 
-// lekcija: 27 - Application - 186.Admin controller and routes.mp4
-Route::resource('admin/users', 'AdminUsersController');
 
 
+// lekcija: 27 - Application - 212.Security  part 1 - middleware registration.mp4, napravljen je middleware Admin.php i u njega su ubacene rute koje idu ka AdminUsersControlleru
+Route::group(['middleware'=>'admin'], function(){
+  
+  // lekcija: 27 - Application - 186.Admin controller and routes.mp4 , 
+  Route::resource('admin/users', 'AdminUsersController');
+  
+  // lekcija: 28 - Application - Posts - 218.Setting route files.mp4
+  Route::resource('admin/posts', 'AdminPostsController');
+
+});
 
 
 

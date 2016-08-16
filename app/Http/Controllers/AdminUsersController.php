@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Session;
 use App\Http\Requests\UsersRequest;
 use App\Http\Requests\UsersEditRequest;
 use App\Photo;
@@ -58,13 +59,14 @@ class AdminUsersController extends Controller{
 	  if($file = $request->file('photo_id')){ // proveri da li je uploadovana fotografija pri kreiranju novog usera u formi u create.blade.php iz foldera 'codehacking\resources\views\admin\users'
 	    // ako jeste radi ovo -
 		$name = time().$file->getClientOriginalName();// napravi ime za uploadovani fajl tj sliku tako sto na trenutno vreme konkatenujes originalno ime slike
-	    $file->move('images', $name); // ubaci fajl u folder 'codehacking\public\images'
+	    //return $name;
+		$file->move('images', $name); // ubaci fajl u folder 'codehacking\public\images'
 		$photo = Photo::create(['file'=>$name]); // u 'file' kolonu 'photos' tabele upisi ime fajla kji je uploadovan
         $input['photo_id'] = $photo->id; // u $input array u koji prebace $request upisi 'photo_id' da bude onaj koji je dodeljen fotografiji u tabeli 'photos'		
 	  }
 	  $input['password'] = bcrypt($request->password); // kriptuj password koji je user uneo u formu i ubaci ga u input array da bude upisan u bazu
 	  User::create($input); // upisi red u tabelu users koristeci $input array u koji je ubacen $request array
-	  
+	  Session::flash('created_user', 'The user '.$input['name'].' has been created'); // upisi u sesiju poruku da je user napravljen
 	  return redirect('/admin/users');   // redirectuj na index.blade.php iz foldera 'resources\views\admin\users' koji prikazuje tabelu sa userima iz baze
 	  
     }
@@ -105,23 +107,25 @@ class AdminUsersController extends Controller{
 	// lekcija: 27 - Application - 209.Updating part 1 and displaying errors.mp4, metod za update postojeceg usera, stize mu request iz
 	// - edit.blade.php u kom je forma popunjena podatcima usera koji su stigli iz metoda edit($id) i validacija je uradjena u UsersRequest.php, takodje mu stize i $id usera posto je tako napisano pri otvaranju forme
     public function update(UsersEditRequest $request, $id){ // koristi se UsersEditRequest da bi radio validaciju koja je u metodu rules() u UsersEditRequest.php
-      // prepravljanje , lekcija: 27 - Application - 211.Updating part 3 - Fixing loose ends.mp4
-	  if(trim($request->password) == ''){ // ako nista nije uneto u password input u formi
+      $input = $request->all(); // uzmi sta je user uneo u formu u edit.blade.php
+	  // prepravljanje , lekcija: 27 - Application - 211.Updating part 3 - Fixing loose ends.mp4
+	  if($request->get('password') == ''){ // ako nista nije uneto u password input u formi
 	    $input = $request->except('password'); // u input array ubaci sve osim passworda
 	  }else{ // ako je unet password uzmi sve sto je stiglo u requestu u $input array
 	    $input = $request->all(); // ubaci sve iz requesta u varijablu
+		$input['password'] = bcrypt($request->password); // kriptuj password koji je user uneo u formu i ubaci ga u input array da bude upisan u bazu
 	  }
-	  
 	  $user = User::findOrFail($id); // nadji u bazi usera po id koji je stigao kad je pozvan metod pored requesta
-	  $input = $request->all(); // uzmi sta je user uneo u formu u edit.blade.php
+	  //$input = $request->all(); // uzmi sta je user uneo u formu u edit.blade.php
 	  if($file = $request->file('photo_id')){ // ako je user uneo novu sliku tj popunjen je photo_id input u formi
 	    $name = time() . $file->getClientOriginalName(); // napravi ime za uploadovani fajl tj sliku tako sto na trenutno vreme konkatenujes originalno ime slike
 		$file->move('images', $name); // ubaci fajl u folder 'codehacking\public\images'
 		$photo = Photo::create(['file'=>$name]); // u 'file' kolonu 'photos' tabele upisi ime fajla kji je uploadovan
 		$input['photo_id'] = $photo->id; // u $input array u koji prebace $request upisi 'photo_id' da bude onaj koji je dodeljen fotografiji u tabeli 'photos'		
 	  }
-	  $input['password'] = bcrypt($request->password); // kriptuj password koji je user uneo u formu i ubaci ga u input array da bude upisan u bazu
+	  //$input['password'] = bcrypt($request->password); // kriptuj password koji je user uneo u formu i ubaci ga u input array da bude upisan u bazu
 	  $user->update($input); // updateuj usera u users tabeli koristeci $input array
+	  Session::flash('updated_user', 'The user '.$input['name'].' has been updated'); // upisi u sesiju poruku da je prepravljen user da bi je index.blade.php prikazao
 	  return redirect('/admin/users');
     }
 
@@ -131,8 +135,22 @@ class AdminUsersController extends Controller{
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+	 
+	// lekcija: 27 - Application - 214.Deleting users.mp4
     public function destroy($id){
-      //
+	  //User::findOrFail($id)->delete();
+	  // lekcija: 27 - Application - 216.Deleting images from the directory.mp4, prepravka da brise sliku usera iz foldera 'codehacking\public\images'
+	  $user = User::findOrFail($id);
+	  unlink(public_path() . $user->photo->file); // prvo obrisi sliku(ime slike uzmi iz 'photos' tabele i konkateniraj ga na folder u kom su slike 'codehacking\public\images')
+	  
+	  // ja dodo da brise i iz 'photos' tabele sliku tj putanju ka slici substr se radi posto u Photo.php modelu ima metod getFileAttribute($photo) koji na ime slike tj 'file' kolonu dodaje string '/images/' da bi u vjuu bilo lakse da se izvuce skia pa sada ovde to odsecamo da bi nasli sliku po 'file' koloni
+	  $imeslike = substr($user->photo->file, 8);
+	  $brisisliku = Photo::where('file', $imeslike)->delete(); // dovde
+	  
+	  $user->delete(); // obrisi red u users tabeli  
+	  Session::flash('deleted_user', 'The user has been deleted'); // upisi u sesiju da je user obrisan pod kljucem 'deleted_user'
+	  return redirect('/admin/users');
+	  
     }
 }
 

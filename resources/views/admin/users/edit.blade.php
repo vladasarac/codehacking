@@ -67,10 +67,19 @@
 	
 	
 	  <div class="form-group">
-  	    {!! Form::submit('Create User', ['class'=>'btn btn-primary']) !!}
+  	    {!! Form::submit('Update User', ['class'=>'btn btn-primary col-sm-6']) !!}
 	  </div>
 	
     {!! Form::close() !!}
+	
+	
+	{{--lekcija: 27 - Application - 214.Deleting users.mp4, forma za brisanje usera, poziva destroy() metod AdminUsersController-a--}}
+	{!! Form::open(['method'=>'DELETE', 'action'=>['AdminUsersController@destroy', $user->id]]) !!} {{--daje se parametar userov id posto DELETE metod to zahteva posto mora stici userov id u destroy metod--}}
+	  <div class="form-group">
+	    {!! Form::submit('Delete User', ['class'=>'btn btn-danger col-sm-6']) !!}
+	  </div>
+	{!! Form::close() !!}
+	
   </div>  {{--kraj diva class="col-sm-3"--}}
   
   </div> {{--kraj diva class="row"--}}

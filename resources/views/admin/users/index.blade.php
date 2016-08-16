@@ -3,6 +3,18 @@
 {{-- lekcija: 27 - Application - 192.Displaying users.mp4 --}}
 
 @section('content')
+
+  @if(Session::has('deleted_user')) {{--kad se obrise user u destroy() metodu AdminUsersControllera u sesiju pod kljucem 'deleted_user' se upisuje 'The user has been deleted', ako postoji to u sesiji prikazi--}}
+    <p class="bg-danger">{{session('deleted_user')}}</p>
+  @endif
+  
+  @if(Session::has('updated_user')) {{--kad se updateuje user u update() metodu AdminUsersControllera u sesiju pod kljucem 'updated_user' se upisuje 'The user has been updated', ako postoji to u sesiji prikazi--}}
+    <p class="bg-info">{{session('updated_user')}}</p>
+  @endif
+  
+  @if(Session::has('created_user')) {{--kad se kreira user u store() metodu AdminUsersControllera u sesiju pod kljucem 'created_user' se upisuje 'The user has been created', ako postoji to u sesiji prikazi--}}
+    <p class="bg-success">{{session('created_user')}}</p>
+  @endif
   <h1>Users</h1>
   {{-- tabela koja prikazuje usere iz users tabele,podatke salje index() metod AdminUsersControllera --}}
   <table class="table">
