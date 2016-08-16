@@ -15,7 +15,9 @@
 	
 	<div class="form-group">
 	  {!! Form::label('category_id', 'Category:') !!}
-	  {!! Form::select('category_id', array(1=>'PHP', 0=>'JavaScript'), null, ['class'=>'form-control']) !!}
+	     {{--lekcija: 28 - Application - 229.Displaying and creating posts with categories.mp4--}}
+	     {{-- iz create() metoda u AdminPostsControlleru je stigao araray $categories sa listom kategorija i njihovim id-ebvima iz categories tabele i ovde cemo od toga napraviti selekt--}} 
+	  {!! Form::select('category_id', [''=>'Choose Categories'] + $categories, null, ['class'=>'form-control']) !!} 
 	</div>
 	
 	<div class="form-group">

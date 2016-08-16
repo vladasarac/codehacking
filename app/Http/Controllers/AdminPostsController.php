@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\PostsCreateRequest;
 use App\Post;
 use App\Photo;
+use App\Category;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use Illuminate\Support\Facades\Auth;
@@ -29,7 +30,9 @@ class AdminPostsController extends Controller{
      * @return \Illuminate\Http\Response
      */
     public function create(){
-      return view('admin.posts.create');
+	  // lekcija: 28 - Application - 229.Displaying and creating posts with categories.mp4, dodavanje kategorije pri kreiranju novog posta
+	  $categories = Category::lists('name', 'id')->all(); // izvuci iz 'categories' tabele kolone name i id i ubaci u $categories varijablu koja ce biti poslata u creater.blade.php gde ce kategorie biti prikazane u selectu da bi user odabrao kategoriju posta
+      return view('admin.posts.create', compact('categories'));
     }
 
     /**

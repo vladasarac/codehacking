@@ -27,7 +27,8 @@
 			     moze ubaciti u href attr kao putanja), ako nema slike prikazi sliku sa urla-http://placehold.it/400x400 koji prikazuje samo sivi kvadrat --}}
 			<td><img height="70" src="{{$post->photo ? $post->photo->file : 'http://placehold.it/400x400'}}" alt=""></td> {{-- lekcija: 28 - Application - 227.Displaying images in post.mp4 --}}
 		    <td>{{$post->user->name}}</td>
-			<td>{{$post->category_id}}</td>
+			{{--ako post ima kategoriju izvuciime kategorije iz 'categories' tabele ako nema napisi 'Uncategorized'--}}
+			<td>{{$post->category ? $post->category->name : 'Uncategorized'}}</td> {{--lekcija: 28 - Application - 229.Displaying and creating posts with categories.mp4--}}
 			<td>{{$post->title}}</td>
 			<td>{{$post->body}}</td>
 			<td>{{$post->created_at->diffForHumans()}}</td>  {{--diffForHumans() je carbon metod tako da ce datum prikazati u formatu npr '2 days ago'--}}
