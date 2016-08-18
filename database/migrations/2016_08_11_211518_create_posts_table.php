@@ -21,6 +21,9 @@ class CreatePostsTable extends Migration
 			$table->string('title');
 			$table->text('body');
             $table->timestamps();
+			
+			// lekcija: 28 - Application - 236.Deleting users with relations.mp4
+			$table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

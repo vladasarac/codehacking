@@ -35,6 +35,9 @@ Route::group(['middleware'=>'admin'], function(){
   
   // lekcija: 28 - Application - Posts - 218.Setting route files.mp4
   Route::resource('admin/posts', 'AdminPostsController');
+  
+  // lekcija: 29 - Application - Categories - 238.Setting up categories.mp4
+  Route::resource('admin/categories', 'AdminCategoriesController');
 
 });
 

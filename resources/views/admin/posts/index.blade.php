@@ -29,8 +29,8 @@
 		    <td>{{$post->user->name}}</td>
 			{{--ako post ima kategoriju izvuciime kategorije iz 'categories' tabele ako nema napisi 'Uncategorized'--}}
 			<td>{{$post->category ? $post->category->name : 'Uncategorized'}}</td> {{--lekcija: 28 - Application - 229.Displaying and creating posts with categories.mp4--}}
-			<td>{{$post->title}}</td>
-			<td>{{$post->body}}</td>
+			<td><a href="{{route('admin.posts.edit', $post->id)}}">{{$post->title}}</a></td>
+			<td>{{str_limit($post->body, 30)}}</td> {{-- str_limit() skracuje string na onoliko karaktera koliko mu napisemo u ovom slucaju 30 --}}
 			<td>{{$post->created_at->diffForHumans()}}</td>  {{--diffForHumans() je carbon metod tako da ce datum prikazati u formatu npr '2 days ago'--}}
 			<td>{{$post->updated_at->diffForHumans()}}</td>
 	      </tr> 

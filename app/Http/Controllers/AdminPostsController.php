@@ -46,7 +46,7 @@ class AdminPostsController extends Controller{
     public function store(PostsCreateRequest $request){
       $input = $request->all();
 	  $user = Auth::user(); // usera koji je trenutno ulogovan ubaci u varijablu da bi mogao da se popuni user_id u posts tabeli
-	 if($file = $request->file('photo_id')){ // proveri da li je user uploadovao sliku , ako jeste upisi je u bazu i uploaduj u folder 'public/images'
+	  if($file = $request->file('photo_id')){ // proveri da li je user uploadovao sliku , ako jeste upisi je u bazu i uploaduj u folder 'public/images'
 	    $name = time() . $file->getClientOriginalName(); // uzmi originalno ime slike i na njega dodaj trenutno vreme da bi slika imala jedinstveno ime
         //return $name;	
         $file->move('images', $name); // uploaduj sliku u folder 'codehacking\public\images'
@@ -73,8 +73,13 @@ class AdminPostsController extends Controller{
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+	 
+	// lekcija: 28 - Application - 232.Editing part 1 - setting up the page and form.mp4
+	// ruta je 'admin.post.edit' i daje se id posta pored imena rute, a URL je http://codehacking.dev/admin/posts/8/edit (ako je post za editovanje sa id 8) 
     public function edit($id){
-       return view('admin.posts.edit');
+	  $post = Post::findOrFail($id); // nadji post ciji je id stigao kad je pozvan metod
+	  $categories = Category::lists('name', 'id')->all(); // izvuci sve id-eve i imena kategorija posto ce biti selekt za kategoriju ako user zeli da je promeni 
+      return view('admin.posts.edit', compact('post', 'categories')); // salji ga u vju edit.blade.php iz foldera 'codehacking\resources\views\admin\posts' da bude prikazan u formi i da se edituje 
     }
 
     /**
@@ -84,8 +89,18 @@ class AdminPostsController extends Controller{
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+	
+	// lekcija: 28 - Application - 233.Editing part 2 - Lets edit the post.mp4
     public function update(Request $request, $id){
-      //
+	  $input = $request->all();
+      if($file = $request->file('photo_id')){ // proveri da li je user uploadovao sliku , ako jeste upisi je u bazu i uploaduj u folder 'public/images'
+	    $name = time() . $file->getClientOriginalName(); // uzmi originalno ime slike i na njega dodaj trenutno vreme da bi slika imala jedinstveno ime 
+        $file->move('images', $name); // uploaduj sliku u folder 'codehacking\public\images'
+        $photo = Photo::create(['file'=>$name]); // upisi red u 'photos' tabelu tj u njenu kolonu 'file' (to je ime slike) 
+        $input['photo_id'] = $photo->id; // id upravo uploadovane slike iz 'photos' tabele ce biti upisan u 'photo_id' kolonu u 'posts' tabeli		
+	  }
+	  Auth::user()->posts()->whereId($id)->first()->update($input);
+	  return redirect('/admin/posts');
     }
 
     /**
@@ -94,8 +109,17 @@ class AdminPostsController extends Controller{
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+	 
+	// lekcija: 28 - Application - 234.Deleting - 235.Deleting - Solution.mp4
     public function destroy($id){
-      //
+      //return "Stigao post sa id: ".$id;
+	  $post = Post::findOrFail($id);
+	  unlink(public_path() . $post->photo->file);
+	  // ja dodo da brise i iz 'photos' tabele sliku tj putanju ka slici substr se radi posto u Photo.php modelu ima metod getFileAttribute($photo) koji na ime slike tj 'file' kolonu dodaje string '/images/' da bi u vjuu bilo lakse da se izvuce skia pa sada ovde to odsecamo da bi nasli sliku po 'file' koloni
+	  $imeslike = substr($post->photo->file, 8);
+	  $brisisliku = Photo::where('file', $imeslike)->delete(); // dovde
+	  $post->delete();
+	  return redirect('/admin/posts'); 
     }
 	
 }

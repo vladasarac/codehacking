@@ -124,10 +124,10 @@
                         <a href="#"><i class="fa fa-wrench fa-fw"></i> Posts<span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
                             <li>
-                                <a href="{{route('admin.posts.index')}}">All Posts</a>
+                                <a href="{{route('admin.posts.index')}}">All Posts</a>{{--poziva index() metod AdminPostsControllera--}}
                             </li>
                             <li>
-                                <a href="{{route('admin.posts.create')}}">Create Post</a>
+                                <a href="{{route('admin.posts.create')}}">Create Post</a>{{--poziva crete() metod AdminUsersController-a--}}
                             </li>
 							
 							
@@ -138,10 +138,10 @@
                         <a href="#"><i class="fa fa-wrench fa-fw"></i> Categories<span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
                             <li>
-                                <a href="/categories">All Categories</a>
+                                <a href="{{route('admin.categories.index')}}">All Categories</a>{{--poziva index() metod AdminCategoriesControllera--}}
                             </li>
                             <li>
-                                <a href="/categories/create">Create Category</a>
+                                <a href="{{route('admin.categories.create')}}">Create Category</a>{{--poziva crete() metod AdminCAtegoriesController-a--}}
                             </li>
                         </ul> <!-- /.nav-second-level -->
                     </li>
